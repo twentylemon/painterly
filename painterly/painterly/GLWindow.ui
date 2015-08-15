@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>557</width>
-    <height>400</height>
+    <width>550</width>
+    <height>427</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>GLWindow</string>
+   <string>Painterly Rendering</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QOpenGLWidget" name="openGLWidget">
@@ -24,20 +24,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="openImageButton">
-    <property name="geometry">
-     <rect>
-      <x>462</x>
-      <y>12</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Open Image</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="quitButton">
+   <widget class="QPushButton" name="buttonQuit">
     <property name="geometry">
      <rect>
       <x>460</x>
@@ -53,16 +40,52 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>12</y>
+      <width>77</width>
+      <height>54</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="buttonOpen_Image">
+       <property name="text">
+        <string>Open Image</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonSave_Image">
+       <property name="text">
+        <string>Save Image</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>557</width>
+     <width>550</width>
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen_Image"/>
+    <addaction name="actionSave_Image"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -73,6 +96,27 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen_Image">
+   <property name="text">
+    <string>Open Image</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionSave_Image">
+   <property name="text">
+    <string>Save Image</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -80,7 +124,23 @@
  </resources>
  <connections>
   <connection>
-   <sender>quitButton</sender>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonQuit</sender>
    <signal>clicked()</signal>
    <receiver>GLWindowClass</receiver>
    <slot>close()</slot>
@@ -90,10 +150,78 @@
      <y>354</y>
     </hint>
     <hint type="destinationlabel">
-     <x>278</x>
-     <y>199</y>
+     <x>274</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonOpen_Image</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>openImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>499</x>
+     <y>56</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpen_Image</sender>
+   <signal>triggered()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>openImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSave_Image</sender>
+   <signal>triggered()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>saveImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonSave_Image</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>saveImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>497</x>
+     <y>84</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
+     <y>213</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>saveImage()</slot>
+  <slot>openImage()</slot>
+ </slots>
 </ui>

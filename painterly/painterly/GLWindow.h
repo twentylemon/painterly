@@ -12,6 +12,10 @@ public:
     GLWindow(QWidget *parent = 0);
     ~GLWindow();
 
+private slots:
+    void saveImage();
+    void openImage();
+
 private:
     Ui::GLWindowClass ui;
 };

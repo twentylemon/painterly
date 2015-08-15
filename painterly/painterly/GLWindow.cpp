@@ -1,5 +1,8 @@
 #include "GLWindow.h"
 
+#include <qfiledialog.h>
+#include <qmessagebox.h>
+
 GLWindow::GLWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -9,4 +12,12 @@ GLWindow::GLWindow(QWidget *parent)
 GLWindow::~GLWindow()
 {
 
+}
+
+void GLWindow::openImage() {
+    QString file = QFileDialog::getOpenFileName(this, tr("Open Image"));
+    QMessageBox::information(this, tr("file"), file);
+}
+
+void GLWindow::saveImage() {
 }
