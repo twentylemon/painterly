@@ -6,29 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>427</height>
+    <width>261</width>
+    <height>264</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Painterly Rendering</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QOpenGLWidget" name="openGLWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>441</width>
-      <height>371</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="buttonQuit">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>310</y>
+      <x>90</x>
+      <y>180</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -40,11 +30,11 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>12</y>
+      <x>10</x>
+      <y>10</y>
       <width>77</width>
       <height>54</height>
      </rect>
@@ -72,7 +62,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>550</width>
+     <width>261</width>
      <height>21</height>
     </rect>
    </property>

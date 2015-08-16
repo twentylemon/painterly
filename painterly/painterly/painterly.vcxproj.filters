@@ -33,6 +33,12 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Header Files\brushes">
+      <UniqueIdentifier>{7dc4a575-0e53-4c5b-87b9-bb9e1ccb13c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\brushes">
+      <UniqueIdentifier>{bda9edd6-70cd-4ffd-9677-558318525793}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -50,6 +56,15 @@
     <ClCompile Include="GeneratedFiles\qrc_GLWindow.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="Painterly.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Brush.cpp">
+      <Filter>Source Files\brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="DotBrush.cpp">
+      <Filter>Source Files\brushes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GLWindow.h">
@@ -65,6 +80,15 @@
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_GLWindow.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Painterly.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Brush.h">
+      <Filter>Header Files\brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="DotBrush.h">
+      <Filter>Header Files\brushes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

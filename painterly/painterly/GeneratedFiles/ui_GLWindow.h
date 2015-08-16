@@ -17,7 +17,6 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QOpenGLWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
@@ -33,9 +32,8 @@ public:
     QAction *actionQuit;
     QAction *actionSave_Image;
     QWidget *centralWidget;
-    QOpenGLWidget *openGLWidget;
     QPushButton *buttonQuit;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *verticalLayout;
     QPushButton *buttonOpen_Image;
     QPushButton *buttonSave_Image;
@@ -48,7 +46,7 @@ public:
     {
         if (GLWindowClass->objectName().isEmpty())
             GLWindowClass->setObjectName(QStringLiteral("GLWindowClass"));
-        GLWindowClass->resize(550, 427);
+        GLWindowClass->resize(261, 264);
         actionOpen_Image = new QAction(GLWindowClass);
         actionOpen_Image->setObjectName(QStringLiteral("actionOpen_Image"));
         actionQuit = new QAction(GLWindowClass);
@@ -57,27 +55,24 @@ public:
         actionSave_Image->setObjectName(QStringLiteral("actionSave_Image"));
         centralWidget = new QWidget(GLWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        openGLWidget = new QOpenGLWidget(centralWidget);
-        openGLWidget->setObjectName(QStringLiteral("openGLWidget"));
-        openGLWidget->setGeometry(QRect(0, 0, 441, 371));
         buttonQuit = new QPushButton(centralWidget);
         buttonQuit->setObjectName(QStringLiteral("buttonQuit"));
-        buttonQuit->setGeometry(QRect(460, 310, 75, 23));
+        buttonQuit->setGeometry(QRect(90, 180, 75, 23));
         buttonQuit->setFlat(false);
-        widget = new QWidget(centralWidget);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(460, 12, 77, 54));
-        verticalLayout = new QVBoxLayout(widget);
+        layoutWidget = new QWidget(centralWidget);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(10, 10, 77, 54));
+        verticalLayout = new QVBoxLayout(layoutWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        buttonOpen_Image = new QPushButton(widget);
+        buttonOpen_Image = new QPushButton(layoutWidget);
         buttonOpen_Image->setObjectName(QStringLiteral("buttonOpen_Image"));
 
         verticalLayout->addWidget(buttonOpen_Image);
 
-        buttonSave_Image = new QPushButton(widget);
+        buttonSave_Image = new QPushButton(layoutWidget);
         buttonSave_Image->setObjectName(QStringLiteral("buttonSave_Image"));
 
         verticalLayout->addWidget(buttonSave_Image);
@@ -85,7 +80,7 @@ public:
         GLWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(GLWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 550, 21));
+        menuBar->setGeometry(QRect(0, 0, 261, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         GLWindowClass->setMenuBar(menuBar);
