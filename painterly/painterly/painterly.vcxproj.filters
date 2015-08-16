@@ -65,6 +65,9 @@
     <ClCompile Include="DotBrush.cpp">
       <Filter>Source Files\brushes</Filter>
     </ClCompile>
+    <ClCompile Include="Stroke.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GLWindow.h">
@@ -89,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="DotBrush.h">
       <Filter>Header Files\brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="Stroke.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

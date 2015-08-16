@@ -27,7 +27,9 @@ const std::unique_ptr<Painterly>& GLWindow::painter() const {
 
 void GLWindow::openImage() {
     painter()->clear_brushes();
-    painter()->add_brush(new DotBrush(3));
+    painter()->add_brush(new DotBrush(8));
+    painter()->add_brush(new DotBrush(4));
+    painter()->add_brush(new DotBrush(2));
     painter()->paint(QFileDialog::getOpenFileName(this, tr("Open Image")).toStdString());
 }
 

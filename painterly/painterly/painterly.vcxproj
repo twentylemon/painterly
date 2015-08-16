@@ -92,6 +92,7 @@
     <ClCompile Include="GLWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Painterly.cpp" />
+    <ClCompile Include="Stroke.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GLWindow.h">
@@ -122,6 +123,7 @@
     <ClInclude Include="DotBrush.h" />
     <ClInclude Include="GeneratedFiles\ui_GLWindow.h" />
     <ClInclude Include="Painterly.h" />
+    <ClInclude Include="Stroke.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GLWindow.qrc">
