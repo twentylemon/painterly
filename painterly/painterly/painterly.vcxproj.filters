@@ -39,14 +39,14 @@
     <Filter Include="Source Files\brushes">
       <UniqueIdentifier>{bda9edd6-70cd-4ffd-9677-558318525793}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\qt">
+      <UniqueIdentifier>{d344d073-ec77-49f6-8b8a-ffcb6782c364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\qt">
+      <UniqueIdentifier>{141a1560-f844-4f37-b724-30c796af1394}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GLWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_GLWindow.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -68,16 +68,25 @@
     <ClCompile Include="Stroke.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GLWindowSlots.cpp">
+      <Filter>Source Files\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="GLWindow.cpp">
+      <Filter>Source Files\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\qt</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="GLWindow.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="GLWindow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GLWindow.qrc">
       <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GLWindow.h">
+      <Filter>Header Files\qt</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

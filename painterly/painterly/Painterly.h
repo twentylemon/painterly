@@ -57,8 +57,10 @@ public:
     void remove_brush(int index);
     void clear_brushes();
 
-    void paint(const std::string& image_file);
-    void paint();
+    void save_canvas(const std::string& filename) const;
+
+    double paint(const std::string& image_file);
+    double paint();
 
 private:
     void init_paint();

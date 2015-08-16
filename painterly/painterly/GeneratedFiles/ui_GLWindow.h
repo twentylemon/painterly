@@ -13,14 +13,16 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLCDNumber>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -34,9 +36,13 @@ public:
     QWidget *centralWidget;
     QPushButton *buttonQuit;
     QWidget *layoutWidget;
-    QVBoxLayout *verticalLayout;
+    QGridLayout *gridLayout;
+    QPushButton *buttonOpen_Chaika;
     QPushButton *buttonOpen_Image;
+    QLabel *labelTime_Taken;
+    QLCDNumber *lcdTime_Taken;
     QPushButton *buttonSave_Image;
+    QPushButton *buttonSave_Default;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QToolBar *mainToolBar;
@@ -61,21 +67,58 @@ public:
         buttonQuit->setFlat(false);
         layoutWidget = new QWidget(centralWidget);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 10, 77, 54));
-        verticalLayout = new QVBoxLayout(layoutWidget);
-        verticalLayout->setSpacing(6);
-        verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
+        layoutWidget->setGeometry(QRect(11, 11, 147, 112));
+        gridLayout = new QGridLayout(layoutWidget);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setContentsMargins(0, 0, 0, 0);
+        buttonOpen_Chaika = new QPushButton(layoutWidget);
+        buttonOpen_Chaika->setObjectName(QStringLiteral("buttonOpen_Chaika"));
+
+        gridLayout->addWidget(buttonOpen_Chaika, 3, 0, 1, 1);
+
         buttonOpen_Image = new QPushButton(layoutWidget);
         buttonOpen_Image->setObjectName(QStringLiteral("buttonOpen_Image"));
 
-        verticalLayout->addWidget(buttonOpen_Image);
+        gridLayout->addWidget(buttonOpen_Image, 0, 0, 2, 1);
+
+        labelTime_Taken = new QLabel(layoutWidget);
+        labelTime_Taken->setObjectName(QStringLiteral("labelTime_Taken"));
+
+        gridLayout->addWidget(labelTime_Taken, 0, 1, 1, 1);
+
+        lcdTime_Taken = new QLCDNumber(layoutWidget);
+        lcdTime_Taken->setObjectName(QStringLiteral("lcdTime_Taken"));
+        lcdTime_Taken->setEnabled(true);
+        QPalette palette;
+        QBrush brush(QColor(255, 0, 0, 255));
+        brush.setStyle(Qt::SolidPattern);
+        palette.setBrush(QPalette::Active, QPalette::WindowText, brush);
+        palette.setBrush(QPalette::Active, QPalette::Text, brush);
+        palette.setBrush(QPalette::Active, QPalette::ButtonText, brush);
+        palette.setBrush(QPalette::Inactive, QPalette::WindowText, brush);
+        palette.setBrush(QPalette::Inactive, QPalette::Text, brush);
+        palette.setBrush(QPalette::Inactive, QPalette::ButtonText, brush);
+        QBrush brush1(QColor(120, 120, 120, 255));
+        brush1.setStyle(Qt::SolidPattern);
+        palette.setBrush(QPalette::Disabled, QPalette::WindowText, brush1);
+        palette.setBrush(QPalette::Disabled, QPalette::Text, brush1);
+        palette.setBrush(QPalette::Disabled, QPalette::ButtonText, brush1);
+        lcdTime_Taken->setPalette(palette);
+        lcdTime_Taken->setSegmentStyle(QLCDNumber::Flat);
+
+        gridLayout->addWidget(lcdTime_Taken, 1, 1, 2, 1);
 
         buttonSave_Image = new QPushButton(layoutWidget);
         buttonSave_Image->setObjectName(QStringLiteral("buttonSave_Image"));
 
-        verticalLayout->addWidget(buttonSave_Image);
+        gridLayout->addWidget(buttonSave_Image, 2, 0, 1, 1);
+
+        buttonSave_Default = new QPushButton(layoutWidget);
+        buttonSave_Default->setObjectName(QStringLiteral("buttonSave_Default"));
+
+        gridLayout->addWidget(buttonSave_Default, 4, 0, 1, 1);
 
         GLWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(GLWindowClass);
@@ -100,10 +143,12 @@ public:
         retranslateUi(GLWindowClass);
         QObject::connect(actionQuit, SIGNAL(triggered()), GLWindowClass, SLOT(close()));
         QObject::connect(buttonQuit, SIGNAL(clicked()), GLWindowClass, SLOT(close()));
-        QObject::connect(buttonOpen_Image, SIGNAL(clicked()), GLWindowClass, SLOT(openImage()));
         QObject::connect(actionOpen_Image, SIGNAL(triggered()), GLWindowClass, SLOT(openImage()));
         QObject::connect(actionSave_Image, SIGNAL(triggered()), GLWindowClass, SLOT(saveImage()));
+        QObject::connect(buttonOpen_Image, SIGNAL(clicked()), GLWindowClass, SLOT(openImage()));
         QObject::connect(buttonSave_Image, SIGNAL(clicked()), GLWindowClass, SLOT(saveImage()));
+        QObject::connect(buttonOpen_Chaika, SIGNAL(clicked()), GLWindowClass, SLOT(openChaika()));
+        QObject::connect(buttonSave_Default, SIGNAL(clicked()), GLWindowClass, SLOT(saveDefault()));
 
         QMetaObject::connectSlotsByName(GLWindowClass);
     } // setupUi
@@ -117,8 +162,11 @@ public:
         actionSave_Image->setText(QApplication::translate("GLWindowClass", "Save Image", 0));
         actionSave_Image->setShortcut(QApplication::translate("GLWindowClass", "Ctrl+S", 0));
         buttonQuit->setText(QApplication::translate("GLWindowClass", "Quit", 0));
+        buttonOpen_Chaika->setText(QApplication::translate("GLWindowClass", "Open Chaika", 0));
         buttonOpen_Image->setText(QApplication::translate("GLWindowClass", "Open Image", 0));
+        labelTime_Taken->setText(QApplication::translate("GLWindowClass", "Time Taken", 0));
         buttonSave_Image->setText(QApplication::translate("GLWindowClass", "Save Image", 0));
+        buttonSave_Default->setText(QApplication::translate("GLWindowClass", "Save Default", 0));
         menuFile->setTitle(QApplication::translate("GLWindowClass", "File", 0));
     } // retranslateUi
 

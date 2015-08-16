@@ -21,8 +21,13 @@ public:
 private slots:
     void saveImage();
     void openImage();
+    void saveDefault();
+    void openChaika();
 
 private:
+    void open_image(const std::string& file);
+    void save_image(const std::string& file);
+
     Ui::GLWindowClass ui;
     std::unique_ptr<Painterly> _painter;
 };

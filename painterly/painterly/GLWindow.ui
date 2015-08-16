@@ -33,24 +33,146 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>77</width>
-      <height>54</height>
+      <x>11</x>
+      <y>11</y>
+      <width>147</width>
+      <height>112</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="0">
+      <widget class="QPushButton" name="buttonOpen_Chaika">
+       <property name="text">
+        <string>Open Chaika</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" rowspan="2">
       <widget class="QPushButton" name="buttonOpen_Image">
        <property name="text">
         <string>Open Image</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="labelTime_Taken">
+       <property name="text">
+        <string>Time Taken</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" rowspan="2">
+      <widget class="QLCDNumber" name="lcdTime_Taken">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="palette">
+        <palette>
+         <active>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>255</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Text">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>255</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>255</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </active>
+         <inactive>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>255</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Text">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>255</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>255</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </inactive>
+         <disabled>
+          <colorrole role="WindowText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>120</red>
+             <green>120</green>
+             <blue>120</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="Text">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>120</red>
+             <green>120</green>
+             <blue>120</blue>
+            </color>
+           </brush>
+          </colorrole>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>120</red>
+             <green>120</green>
+             <blue>120</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </disabled>
+        </palette>
+       </property>
+       <property name="segmentStyle">
+        <enum>QLCDNumber::Flat</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
       <widget class="QPushButton" name="buttonSave_Image">
        <property name="text">
         <string>Save Image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="buttonSave_Default">
+       <property name="text">
+        <string>Save Default</string>
        </property>
       </widget>
      </item>
@@ -146,22 +268,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonOpen_Image</sender>
-   <signal>clicked()</signal>
-   <receiver>GLWindowClass</receiver>
-   <slot>openImage()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>499</x>
-     <y>56</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>274</x>
-     <y>213</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionOpen_Image</sender>
    <signal>triggered()</signal>
    <receiver>GLWindowClass</receiver>
@@ -194,6 +300,22 @@
    </hints>
   </connection>
   <connection>
+   <sender>buttonOpen_Image</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>openImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>499</x>
+     <y>56</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>buttonSave_Image</sender>
    <signal>clicked()</signal>
    <receiver>GLWindowClass</receiver>
@@ -209,9 +331,43 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttonOpen_Chaika</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>openChaika()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>130</x>
+     <y>131</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonSave_Default</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>saveDefault()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>143</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>130</x>
+     <y>131</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>saveImage()</slot>
   <slot>openImage()</slot>
+  <slot>openChaika()</slot>
+  <slot>saveDefault()</slot>
  </slots>
 </ui>

@@ -3,6 +3,7 @@
 #include "Painterly.h"
 
 #include <algorithm>
+#include <numeric>
 #include <qdebug.h>
 
 #include "Stroke.h"
@@ -15,6 +16,12 @@
 #include <ppl.h>
 #include <concurrent_vector.h>
 #endif
+
+/*
+    gradient direction: see painterly-rendering.sln
+    spline curve: http://docs.opencv.org/modules/core/doc/drawing_functions.html#polylines
+        it takes a vector<vector<Point>>; we care about one curve, so dimensionality is 1 then #pts
+*/
 
 const std::string Painterly::SOURCE_NAME = "Source Image";
 const std::string Painterly::PAINTED_NAME = "Painted Image";
@@ -170,13 +177,19 @@ void Painterly::clear_brushes() {
     brushes().clear();
 }
 
+
+void Painterly::save_canvas(const std::string& filename) const {
+    cv::imwrite(filename, _canvas);
+}
+
 void Painterly::set_image_file(const std::string& image_file) {
     _source = cv::imread(image_file, CV_LOAD_IMAGE_COLOR);
     _source.convertTo(_source, CV_8UC3);
+    _canvas = cv::Mat(source().rows, source().cols, CV_8UC3);
 }
 
 void Painterly::init_paint() {
-    _canvas = cv::Mat(source().rows, source().cols, CV_8UC3, cv::Scalar(0, 0, 0));
+    _canvas = cv::Scalar(0, 0, 0);
     cv::namedWindow(SOURCE_NAME, cv::WINDOW_AUTOSIZE);
     cv::namedWindow(PAINTED_NAME, cv::WINDOW_AUTOSIZE);
     cv::imshow(SOURCE_NAME, source());
@@ -184,7 +197,7 @@ void Painterly::init_paint() {
 
 
 cv::Mat Painterly::difference(const cv::Mat& reference_image) {
-    cv::Mat diff(canvas().rows, canvas().cols, CV_32FC1, cv::Scalar(0.0));
+    cv::Mat diff(canvas().rows, canvas().cols, CV_32FC1);
 #ifdef USE_PPL
     concurrency::parallel_for(0, diff.rows, [&](int row){
         concurrency::parallel_for(0, diff.cols, [&,row](int col){
@@ -204,27 +217,28 @@ cv::Mat Painterly::difference(const cv::Mat& reference_image) {
 }
 
 
-void Painterly::paint(const std::string& image_file) {
+double Painterly::paint(const std::string& image_file) {
     set_image_file(image_file);
-    paint();
+    return paint();
 }
 
-void Painterly::paint() {
+double Painterly::paint() {
+    double start = static_cast<double>(cv::getTickCount());
     init_paint();
-    std::for_each(brushes().begin(), brushes().end(), [this](const std::unique_ptr<Brush>& brush){
+    std::for_each(brushes().rbegin(), brushes().rend(), [this](const std::unique_ptr<Brush>& brush){
         cv::Mat reference_image;
         int size = static_cast<int>(blur_factor() * brush->radius());
         if (size % 2 == 0) {
             size++;
         }
-        cv::GaussianBlur(source(), reference_image, cv::Size(size, size), 0, 0, cv::BorderTypes::BORDER_DEFAULT);
+        cv::GaussianBlur(source(), reference_image, cv::Size(size, size), size, size);
         paint_layer(reference_image, brush);
     });
     cv::imshow(PAINTED_NAME, canvas());
+    return (static_cast<double>(cv::getTickCount()) - start) / cv::getTickFrequency();
 }
 
 void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_ptr<Brush>& brush) {
-    double start = static_cast<double>(cv::getTickCount());
     cv::Mat diff = difference(reference_image);
     int grid = static_cast<int>(grid_size() * brush->radius());
 #ifdef USE_PPL
@@ -245,25 +259,6 @@ void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_pt
                 cv::minMaxLoc(area, nullptr, nullptr, nullptr, &max_loc);
                 strokes.push_back(Stroke(brush.get(), cv::Point(std::min(reference_image.cols-1, max_loc.x+col), std::min(reference_image.rows-1, max_loc.y+row))));
             }
-            /*
-            cv::Range xrange = cv::Range(std::max(row-grid/2, 0), std::min(row+grid/2, reference_image.rows));
-            cv::Range yrange = cv::Range(std::max(col-grid/2, 0), std::min(col+grid/2, reference_image.cols));
-            cv::Mat canvas_area = canvas()(xrange, yrange);
-            cv::Mat reference_area = reference_image(xrange, yrange);
-            if (canvas().at<cv::Vec3b>(row, col) != cv::Vec3b(0, 0, 0) || cv::norm(canvas_area, reference_area) > threshold()) {
-                cv::Point max_loc;
-                double max = -1.0;
-                for (int r = 0; r < canvas_area.rows; r++) {
-                    for (int c = 0; c < canvas_area.cols; c++) {
-                        double dist = cv::norm(canvas_area.at<cv::Vec3b>(r, c), reference_area.at<cv::Vec3b>(r, c));
-                        if (dist > max) {
-                            max = dist;
-                            max_loc = cv::Point(r, c);
-                        }
-                    }
-                }
-            }
-            */
 #ifdef USE_PPL
         });
     });
@@ -271,8 +266,8 @@ void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_pt
         }
     }
 #endif
+    std::random_shuffle(strokes.begin(), strokes.end());
     std::for_each(strokes.begin(), strokes.end(), [this,&reference_image](const Stroke& stroke) {
         stroke(canvas(), reference_image);
     });
-    qDebug() << (static_cast<double>(cv::getTickCount()) - start) / cv::getTickFrequency();
 }
