@@ -10,6 +10,6 @@ class DotBrush :
 public:
     DotBrush(int radius);
 
-    virtual void make_stroke(cv::Mat& canvas, const cv::Point& center, const cv::Mat& reference_image) const;
+    virtual void make_stroke(cv::Mat& canvas, const cv::Point& center, const cv::Mat& reference_image) const override;
 };
 #endif

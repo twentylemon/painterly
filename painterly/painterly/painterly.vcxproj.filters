@@ -77,6 +77,15 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files\qt</Filter>
     </ClCompile>
+    <ClCompile Include="LineBrush.cpp">
+      <Filter>Source Files\brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="GradBrush.cpp">
+      <Filter>Source Files\brushes</Filter>
+    </ClCompile>
+    <ClCompile Include="SplineBrush.cpp">
+      <Filter>Source Files\brushes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GLWindow.ui">
@@ -104,6 +113,15 @@
     </ClInclude>
     <ClInclude Include="Stroke.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineBrush.h">
+      <Filter>Header Files\brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="SplineBrush.h">
+      <Filter>Header Files\brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="GradBrush.h">
+      <Filter>Header Files\brushes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -92,8 +92,11 @@
     </ClCompile>
     <ClCompile Include="GLWindow.cpp" />
     <ClCompile Include="GLWindowSlots.cpp" />
+    <ClCompile Include="GradBrush.cpp" />
+    <ClCompile Include="LineBrush.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Painterly.cpp" />
+    <ClCompile Include="SplineBrush.cpp" />
     <ClCompile Include="Stroke.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -124,7 +127,10 @@
     <ClInclude Include="Brush.h" />
     <ClInclude Include="DotBrush.h" />
     <ClInclude Include="GeneratedFiles\ui_GLWindow.h" />
+    <ClInclude Include="GradBrush.h" />
+    <ClInclude Include="LineBrush.h" />
     <ClInclude Include="Painterly.h" />
+    <ClInclude Include="SplineBrush.h" />
     <ClInclude Include="Stroke.h" />
   </ItemGroup>
   <ItemGroup>

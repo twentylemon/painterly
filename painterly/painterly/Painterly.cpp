@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <numeric>
+
 #include <qdebug.h>
 
 #include "Stroke.h"
@@ -16,12 +17,6 @@
 #include <ppl.h>
 #include <concurrent_vector.h>
 #endif
-
-/*
-    gradient direction: see painterly-rendering.sln
-    spline curve: http://docs.opencv.org/modules/core/doc/drawing_functions.html#polylines
-        it takes a vector<vector<Point>>; we care about one curve, so dimensionality is 1 then #pts
-*/
 
 const std::string Painterly::SOURCE_NAME = "Source Image";
 const std::string Painterly::PAINTED_NAME = "Painted Image";
@@ -193,6 +188,7 @@ void Painterly::init_paint() {
     cv::namedWindow(SOURCE_NAME, cv::WINDOW_AUTOSIZE);
     cv::namedWindow(PAINTED_NAME, cv::WINDOW_AUTOSIZE);
     cv::imshow(SOURCE_NAME, source());
+    std::for_each(brushes().begin(), brushes().end(), [](const std::unique_ptr<Brush>& brush){ brush->reset(); });
 }
 
 

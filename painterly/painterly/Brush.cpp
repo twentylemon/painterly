@@ -19,6 +19,9 @@ void Brush::set_radius(int radius) {
     _radius = radius;
 }
 
+void Brush::reset() {
+}
+
 bool Brush::operator<(const Brush& rhs) const {
     return radius() < rhs.radius();
 }
