@@ -37,9 +37,9 @@ const std::unique_ptr<Painterly>& GLWindow::painter() const {
 
 void GLWindow::open_image(const std::string& file) {
     painter()->clear_brushes();
-    painter()->add_brush(new LineBrush(8));
-    painter()->add_brush(new LineBrush(4));
-    painter()->add_brush(new LineBrush(2));
+    painter()->add_brush(new DotBrush(8));
+    painter()->add_brush(new DotBrush(4));
+    painter()->add_brush(new DotBrush(2));
     double time = painter()->paint(file);
     ui.lcdTime_Taken->display(time);
 }

@@ -70,10 +70,12 @@ private:
     cv::Mat difference(const cv::Mat& reference_image);
 
     cv::Mat& canvas();
+    cv::Rect& bounds();
 
     std::vector<std::unique_ptr<Brush>> _brushes;
     cv::Mat _canvas;
     cv::Mat _source;
+    cv::Rect _bounds;
 
     double _approx_threshold;
     double _blur_factor;
