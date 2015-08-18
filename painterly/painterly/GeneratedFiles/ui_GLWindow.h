@@ -34,15 +34,18 @@ public:
     QAction *actionQuit;
     QAction *actionSave_Image;
     QWidget *centralWidget;
-    QPushButton *buttonQuit;
-    QWidget *layoutWidget;
+    QWidget *widget;
     QGridLayout *gridLayout;
-    QPushButton *buttonOpen_Chaika;
-    QPushButton *buttonOpen_Image;
-    QLabel *labelTime_Taken;
-    QLCDNumber *lcdTime_Taken;
+    QPushButton *buttonOpen_Video;
+    QPushButton *buttonQuit;
     QPushButton *buttonSave_Image;
+    QPushButton *buttonOpen_Image;
+    QLCDNumber *lcdTime_Taken;
     QPushButton *buttonSave_Default;
+    QLabel *labelTime_Taken;
+    QPushButton *buttonOpen_Chaika;
+    QPushButton *buttonRepaint;
+    QPushButton *buttonOpen_GoT;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QToolBar *mainToolBar;
@@ -52,7 +55,7 @@ public:
     {
         if (GLWindowClass->objectName().isEmpty())
             GLWindowClass->setObjectName(QStringLiteral("GLWindowClass"));
-        GLWindowClass->resize(261, 264);
+        GLWindowClass->resize(301, 237);
         actionOpen_Image = new QAction(GLWindowClass);
         actionOpen_Image->setObjectName(QStringLiteral("actionOpen_Image"));
         actionQuit = new QAction(GLWindowClass);
@@ -61,34 +64,36 @@ public:
         actionSave_Image->setObjectName(QStringLiteral("actionSave_Image"));
         centralWidget = new QWidget(GLWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        buttonQuit = new QPushButton(centralWidget);
-        buttonQuit->setObjectName(QStringLiteral("buttonQuit"));
-        buttonQuit->setGeometry(QRect(90, 180, 75, 23));
-        buttonQuit->setFlat(false);
-        layoutWidget = new QWidget(centralWidget);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(11, 11, 147, 112));
-        gridLayout = new QGridLayout(layoutWidget);
+        widget = new QWidget(centralWidget);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setGeometry(QRect(10, 10, 281, 170));
+        gridLayout = new QGridLayout(widget);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);
-        buttonOpen_Chaika = new QPushButton(layoutWidget);
-        buttonOpen_Chaika->setObjectName(QStringLiteral("buttonOpen_Chaika"));
+        buttonOpen_Video = new QPushButton(widget);
+        buttonOpen_Video->setObjectName(QStringLiteral("buttonOpen_Video"));
 
-        gridLayout->addWidget(buttonOpen_Chaika, 3, 0, 1, 1);
+        gridLayout->addWidget(buttonOpen_Video, 0, 2, 1, 1);
 
-        buttonOpen_Image = new QPushButton(layoutWidget);
+        buttonQuit = new QPushButton(widget);
+        buttonQuit->setObjectName(QStringLiteral("buttonQuit"));
+        buttonQuit->setFlat(false);
+
+        gridLayout->addWidget(buttonQuit, 5, 1, 1, 1);
+
+        buttonSave_Image = new QPushButton(widget);
+        buttonSave_Image->setObjectName(QStringLiteral("buttonSave_Image"));
+
+        gridLayout->addWidget(buttonSave_Image, 1, 0, 1, 1);
+
+        buttonOpen_Image = new QPushButton(widget);
         buttonOpen_Image->setObjectName(QStringLiteral("buttonOpen_Image"));
 
-        gridLayout->addWidget(buttonOpen_Image, 0, 0, 2, 1);
+        gridLayout->addWidget(buttonOpen_Image, 0, 0, 1, 1);
 
-        labelTime_Taken = new QLabel(layoutWidget);
-        labelTime_Taken->setObjectName(QStringLiteral("labelTime_Taken"));
-
-        gridLayout->addWidget(labelTime_Taken, 0, 1, 1, 1);
-
-        lcdTime_Taken = new QLCDNumber(layoutWidget);
+        lcdTime_Taken = new QLCDNumber(widget);
         lcdTime_Taken->setObjectName(QStringLiteral("lcdTime_Taken"));
         lcdTime_Taken->setEnabled(true);
         QPalette palette;
@@ -110,20 +115,35 @@ public:
 
         gridLayout->addWidget(lcdTime_Taken, 1, 1, 2, 1);
 
-        buttonSave_Image = new QPushButton(layoutWidget);
-        buttonSave_Image->setObjectName(QStringLiteral("buttonSave_Image"));
-
-        gridLayout->addWidget(buttonSave_Image, 2, 0, 1, 1);
-
-        buttonSave_Default = new QPushButton(layoutWidget);
+        buttonSave_Default = new QPushButton(widget);
         buttonSave_Default->setObjectName(QStringLiteral("buttonSave_Default"));
 
         gridLayout->addWidget(buttonSave_Default, 4, 0, 1, 1);
 
+        labelTime_Taken = new QLabel(widget);
+        labelTime_Taken->setObjectName(QStringLiteral("labelTime_Taken"));
+
+        gridLayout->addWidget(labelTime_Taken, 0, 1, 1, 1);
+
+        buttonOpen_Chaika = new QPushButton(widget);
+        buttonOpen_Chaika->setObjectName(QStringLiteral("buttonOpen_Chaika"));
+
+        gridLayout->addWidget(buttonOpen_Chaika, 3, 0, 1, 1);
+
+        buttonRepaint = new QPushButton(widget);
+        buttonRepaint->setObjectName(QStringLiteral("buttonRepaint"));
+
+        gridLayout->addWidget(buttonRepaint, 2, 0, 1, 1);
+
+        buttonOpen_GoT = new QPushButton(widget);
+        buttonOpen_GoT->setObjectName(QStringLiteral("buttonOpen_GoT"));
+
+        gridLayout->addWidget(buttonOpen_GoT, 3, 2, 1, 1);
+
         GLWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(GLWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 261, 21));
+        menuBar->setGeometry(QRect(0, 0, 301, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         GLWindowClass->setMenuBar(menuBar);
@@ -149,6 +169,9 @@ public:
         QObject::connect(buttonSave_Image, SIGNAL(clicked()), GLWindowClass, SLOT(saveImage()));
         QObject::connect(buttonOpen_Chaika, SIGNAL(clicked()), GLWindowClass, SLOT(openChaika()));
         QObject::connect(buttonSave_Default, SIGNAL(clicked()), GLWindowClass, SLOT(saveDefault()));
+        QObject::connect(buttonRepaint, SIGNAL(clicked()), GLWindowClass, SLOT(repaintCurrent()));
+        QObject::connect(buttonOpen_Video, SIGNAL(clicked()), GLWindowClass, SLOT(openVideo()));
+        QObject::connect(buttonOpen_GoT, SIGNAL(clicked()), GLWindowClass, SLOT(openDefaultVideo()));
 
         QMetaObject::connectSlotsByName(GLWindowClass);
     } // setupUi
@@ -161,12 +184,15 @@ public:
         actionQuit->setText(QApplication::translate("GLWindowClass", "Quit", 0));
         actionSave_Image->setText(QApplication::translate("GLWindowClass", "Save Image", 0));
         actionSave_Image->setShortcut(QApplication::translate("GLWindowClass", "Ctrl+S", 0));
+        buttonOpen_Video->setText(QApplication::translate("GLWindowClass", "Open Video", 0));
         buttonQuit->setText(QApplication::translate("GLWindowClass", "Quit", 0));
-        buttonOpen_Chaika->setText(QApplication::translate("GLWindowClass", "Open Chaika", 0));
-        buttonOpen_Image->setText(QApplication::translate("GLWindowClass", "Open Image", 0));
-        labelTime_Taken->setText(QApplication::translate("GLWindowClass", "Time Taken", 0));
         buttonSave_Image->setText(QApplication::translate("GLWindowClass", "Save Image", 0));
+        buttonOpen_Image->setText(QApplication::translate("GLWindowClass", "Open Image", 0));
         buttonSave_Default->setText(QApplication::translate("GLWindowClass", "Save Default", 0));
+        labelTime_Taken->setText(QApplication::translate("GLWindowClass", "Time Taken", 0));
+        buttonOpen_Chaika->setText(QApplication::translate("GLWindowClass", "Open Chaika", 0));
+        buttonRepaint->setText(QApplication::translate("GLWindowClass", "Repaint", 0));
+        buttonOpen_GoT->setText(QApplication::translate("GLWindowClass", "Open GoT", 0));
         menuFile->setTitle(QApplication::translate("GLWindowClass", "File", 0));
     } // retranslateUi
 

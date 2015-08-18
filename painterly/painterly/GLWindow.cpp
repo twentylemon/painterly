@@ -2,7 +2,6 @@
 
 #include "GLWindow.h"
 
-#include "Painterly.h"
 #include "DotBrush.h"
 #include "LineBrush.h"
 #include "SplineBrush.h"
@@ -16,7 +15,7 @@
 */
 
 GLWindow::GLWindow(QWidget *parent)
-    : QMainWindow(parent), _painter(new Painterly())
+    : QMainWindow(parent), _painter(new Painterly()), _current_image("D:/pics/39.jpg")
 {
     ui.setupUi(this);
 }
@@ -37,13 +36,22 @@ const std::unique_ptr<Painterly>& GLWindow::painter() const {
 
 void GLWindow::open_image(const std::string& file) {
     painter()->clear_brushes();
-    painter()->add_brush(new DotBrush(8));
-    painter()->add_brush(new DotBrush(4));
-    painter()->add_brush(new DotBrush(2));
+    painter()->add_brush(new SplineBrush(8));
+    painter()->add_brush(new SplineBrush(4));
+    painter()->add_brush(new SplineBrush(2));
     double time = painter()->paint(file);
     ui.lcdTime_Taken->display(time);
 }
 
 void GLWindow::save_image(const std::string& file) {
     painter()->save_canvas(file);
+}
+
+
+void GLWindow::open_video(cv::VideoCapture& video, const std::string& out_file) {
+    painter()->clear_brushes();
+    painter()->add_brush(new SplineBrush(8));
+    painter()->add_brush(new SplineBrush(4));
+    painter()->add_brush(new SplineBrush(2));
+    painter()->paint(video, out_file);
 }

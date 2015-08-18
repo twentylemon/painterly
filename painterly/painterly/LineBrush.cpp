@@ -18,7 +18,7 @@ void LineBrush::set_line_length(int line_length) {
     _line_length = line_length;
 }
 
-void LineBrush::make_stroke(cv::Mat& canvas, const cv::Point& center, const cv::Mat& reference_image) const {
+void LineBrush::make_stroke(cv::Mat& canvas, const cv::Point& center, const cv::Mat& reference_image, const Style& style) const {
     init_gradient(reference_image);
     cv::Scalar x, y;
     cv::polarToCart(cv::Scalar(line_length()), cv::Scalar(GRAD_DIRECTION.at<float>(center)), x, y);

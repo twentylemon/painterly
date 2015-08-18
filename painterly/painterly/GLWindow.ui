@@ -6,58 +6,52 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>261</width>
-    <height>264</height>
+    <width>301</width>
+    <height>237</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Painterly Rendering</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="buttonQuit">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>180</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Quit</string>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>11</x>
-      <y>11</y>
-      <width>147</width>
-      <height>112</height>
+      <x>10</x>
+      <y>10</y>
+      <width>281</width>
+      <height>170</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="3" column="0">
-      <widget class="QPushButton" name="buttonOpen_Chaika">
+     <item row="0" column="2">
+      <widget class="QPushButton" name="buttonOpen_Video">
        <property name="text">
-        <string>Open Chaika</string>
+        <string>Open Video</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="0" rowspan="2">
+     <item row="5" column="1">
+      <widget class="QPushButton" name="buttonQuit">
+       <property name="text">
+        <string>Quit</string>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="buttonSave_Image">
+       <property name="text">
+        <string>Save Image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
       <widget class="QPushButton" name="buttonOpen_Image">
        <property name="text">
         <string>Open Image</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="labelTime_Taken">
-       <property name="text">
-        <string>Time Taken</string>
        </property>
       </widget>
      </item>
@@ -162,17 +156,38 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
-      <widget class="QPushButton" name="buttonSave_Image">
-       <property name="text">
-        <string>Save Image</string>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="0">
       <widget class="QPushButton" name="buttonSave_Default">
        <property name="text">
         <string>Save Default</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="labelTime_Taken">
+       <property name="text">
+        <string>Time Taken</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="buttonOpen_Chaika">
+       <property name="text">
+        <string>Open Chaika</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="buttonRepaint">
+       <property name="text">
+        <string>Repaint</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QPushButton" name="buttonOpen_GoT">
+       <property name="text">
+        <string>Open GoT</string>
        </property>
       </widget>
      </item>
@@ -184,7 +199,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>261</width>
+     <width>301</width>
      <height>21</height>
     </rect>
    </property>
@@ -363,11 +378,62 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttonRepaint</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>repaintCurrent()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>172</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>130</x>
+     <y>131</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonOpen_Video</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>openVideo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>245</x>
+     <y>55</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonOpen_GoT</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>openDefaultVideo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>245</x>
+     <y>142</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>saveImage()</slot>
   <slot>openImage()</slot>
   <slot>openChaika()</slot>
   <slot>saveDefault()</slot>
+  <slot>repaintCurrent()</slot>
+  <slot>openVideo()</slot>
+  <slot>openDefaultVideo()</slot>
  </slots>
 </ui>

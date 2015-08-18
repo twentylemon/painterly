@@ -13,7 +13,7 @@ public:
     int line_length() const;
     void set_line_length(int line_length);
 
-    virtual void make_stroke(cv::Mat& canvas, const cv::Point& center, const cv::Mat& reference_image) const override;
+    virtual void make_stroke(cv::Mat& canvas, const cv::Point& center, const cv::Mat& reference_image, const Style& style) const override;
 
 private:
     int _line_length;

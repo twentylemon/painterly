@@ -2,7 +2,6 @@
 #ifndef PAINTERLY_H
 #define PAINTERLY_H
 
-#include <array>
 #include <string>
 #include <vector>
 #include <memory>
@@ -10,6 +9,7 @@
 #include <opencv2/opencv.hpp>
 
 #include "Brush.h"
+#include "Style.h"
 
 class Painterly
 {
@@ -25,33 +25,8 @@ public:
 
     const cv::Mat& source() const;
 
-    double threshold() const;
-    void set_threshold(double threshold);
-    double blur_factor() const;
-    void set_blur_factor(double blur_factor);
-    double grid_size() const;
-    void set_grid_size(double grid_size);
-    std::array<double,3>& rgb_jitter();
-    const std::array<double,3>& rgb_jitter() const;
-    void set_rgb_jitter(double red, double green, double blue);
-    double red_jitter() const;
-    void set_red_jitter(double red);
-    double green_jitter() const;
-    void set_green_jitter(double green);
-    double blue_jitter() const;
-    void set_blue_jitter(double blue);
-    std::array<double,3>& hsv_jitter();
-    const std::array<double,3>& hsv_jitter() const;
-    void set_hsv_jitter(double hue, double saturation, double value);
-    double hue_jitter() const;
-    void set_hue_jitter(double hue);
-    double saturation_jitter() const;
-    void set_saturation_jitter(double saturation);
-    double value_jitter() const;
-    void set_value_jitter(double value);
-
-
-    void set_image_file(const std::string& image_file);
+    Style& style();
+    void set_style(const Style& style);
 
     void add_brush(Brush* brush);
     void remove_brush(int index);
@@ -60,27 +35,32 @@ public:
     void save_canvas(const std::string& filename) const;
 
     double paint(const std::string& image_file);
-    double paint();
+    double paint(cv::VideoCapture& video, const std::string& out_file);
 
 private:
+    void set_image_file(const std::string& image_file);
+    void reset_brushes();
     void init_paint();
+    bool read_frame(cv::VideoCapture& video);
 
-    void paint_layer(const cv::Mat& reference_image, const std::unique_ptr<Brush>& brush);
+    double paint(bool video);
+    void paint_layer(const cv::Mat& reference_image, const std::unique_ptr<Brush>& brush, bool refresh);
 
     cv::Mat difference(const cv::Mat& reference_image);
+    double frame_difference(const cv::Range& xrange, const cv::Range& yrange);
 
-    cv::Mat& canvas();
+    cv::Mat& frame();
+    cv::Mat& prev_frame();
+    cv::Mat& prev_source();
     cv::Rect& bounds();
 
     std::vector<std::unique_ptr<Brush>> _brushes;
-    cv::Mat _canvas;
+    cv::Mat _frame;
+    cv::Mat _prev_frame;
     cv::Mat _source;
+    cv::Mat _prev_source;
     cv::Rect _bounds;
 
-    double _approx_threshold;
-    double _blur_factor;
-    double _grid_size;
-    std::array<double,3> _rgb_jitter;
-    std::array<double,3> _hsv_jitter;
+    Style _style;
 };
 #endif

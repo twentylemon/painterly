@@ -49,7 +49,7 @@ void SplineBrush::set_curve(double curve) {
 }
 
 
-void SplineBrush::make_stroke(cv::Mat& canvas, const cv::Point& center, const cv::Mat& reference_image) const {
+void SplineBrush::make_stroke(cv::Mat& canvas, const cv::Point& center, const cv::Mat& reference_image, const Style& style) const {
     init_gradient(reference_image);
     std::vector<std::vector<cv::Point>> contour;
     contour.emplace_back();

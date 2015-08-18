@@ -86,6 +86,9 @@
     <ClCompile Include="SplineBrush.cpp">
       <Filter>Source Files\brushes</Filter>
     </ClCompile>
+    <ClCompile Include="Style.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GLWindow.ui">
@@ -122,6 +125,9 @@
     </ClInclude>
     <ClInclude Include="GradBrush.h">
       <Filter>Header Files\brushes</Filter>
+    </ClInclude>
+    <ClInclude Include="Style.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

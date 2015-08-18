@@ -98,6 +98,7 @@
     <ClCompile Include="Painterly.cpp" />
     <ClCompile Include="SplineBrush.cpp" />
     <ClCompile Include="Stroke.cpp" />
+    <ClCompile Include="Style.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GLWindow.h">
@@ -132,6 +133,7 @@
     <ClInclude Include="Painterly.h" />
     <ClInclude Include="SplineBrush.h" />
     <ClInclude Include="Stroke.h" />
+    <ClInclude Include="Style.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GLWindow.qrc">

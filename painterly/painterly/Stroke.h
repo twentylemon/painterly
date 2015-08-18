@@ -14,7 +14,7 @@ public:
     const Brush* brush() const;
     const cv::Point& point() const;
 
-    void operator()(cv::Mat& canvas, const cv::Mat& reference_image) const;
+    void operator()(cv::Mat& canvas, const cv::Mat& reference_image, const Style& style) const;
 
 private:
     Brush* _brush;

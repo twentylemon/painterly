@@ -28,126 +28,22 @@ int handle_error(int status, const char* func_name, const char* err_msg, const c
 const std::string Painterly::SOURCE_NAME = "Source Image";
 const std::string Painterly::PAINTED_NAME = "Painted Image";
 
-const float DEFAULT_THRESHOLD = 100.0f;
-
-Painterly::Painterly() :
-    _approx_threshold(DEFAULT_THRESHOLD),
-    _blur_factor(1.0),
-    _grid_size(1.0)
+Painterly::Painterly() : _style()
 {
-    _rgb_jitter.fill(0.0);
-    _hsv_jitter.fill(0.0);
 }
 
-Painterly::Painterly(const std::string& image_file) :
-    _approx_threshold(DEFAULT_THRESHOLD),
-    _blur_factor(1.0),
-    _grid_size(1.0)
+Painterly::Painterly(const std::string& image_file) : _style()
 {
-    _rgb_jitter.fill(0.0);
-    _hsv_jitter.fill(0.0);
     set_image_file(image_file);
 }
 
 
-double Painterly::threshold() const {
-    return _approx_threshold;
+Style& Painterly::style() {
+    return _style;
 }
 
-void Painterly::set_threshold(double threshold) {
-    _approx_threshold = threshold;
-}
-
-double Painterly::blur_factor() const {
-    return _blur_factor;
-}
-
-void Painterly::set_blur_factor(double blur_factor) {
-    _blur_factor = blur_factor;
-}
-
-double Painterly::grid_size() const {
-    return _grid_size;
-}
-
-void Painterly::set_grid_size(double grid_size) {
-    _grid_size = grid_size;
-}
-
-std::array<double,3>& Painterly::rgb_jitter() {
-    return _rgb_jitter;
-}
-
-const std::array<double,3>& Painterly::rgb_jitter() const {
-    return _rgb_jitter;
-}
-
-void Painterly::set_rgb_jitter(double red, double green, double blue) {
-    set_red_jitter(red);
-    set_green_jitter(green);
-    set_blue_jitter(blue);
-}
-
-double Painterly::red_jitter() const {
-    return _rgb_jitter[0];
-}
-
-void Painterly::set_red_jitter(double red) {
-    _rgb_jitter[0] = red;
-}
-
-double Painterly::green_jitter() const {
-    return _rgb_jitter[1];
-}
-
-void Painterly::set_green_jitter(double green) {
-    _rgb_jitter[1] = green;
-}
-
-double Painterly::blue_jitter() const {
-    return _rgb_jitter[2];
-}
-
-void Painterly::set_blue_jitter(double blue) {
-    _rgb_jitter[2] = blue;
-}
-
-std::array<double,3>& Painterly::hsv_jitter() {
-    return _hsv_jitter;
-}
-
-const std::array<double,3>& Painterly::hsv_jitter() const {
-    return _hsv_jitter;
-}
-
-double Painterly::hue_jitter() const {
-    return _hsv_jitter[0];
-}
-
-void Painterly::set_hue_jitter(double hue) {
-    _hsv_jitter[0] = hue;
-}
-
-double Painterly::saturation_jitter() const {
-    return _hsv_jitter[1];
-}
-
-void Painterly::set_saturation_jitter(double saturation) {
-    _hsv_jitter[1] = saturation;
-}
-
-double Painterly::value_jitter() const {
-    return _hsv_jitter[2];
-}
-
-void Painterly::set_value_jitter(double value) {
-    _hsv_jitter[2] = value;
-}
-
-void Painterly::set_hsv_jitter(double hue, double saturation, double value) {
-    set_hue_jitter(hue);
-    set_saturation_jitter(saturation);
-    set_value_jitter(value);
+void Painterly::set_style(const Style& style) {
+    _style = style;
 }
 
 std::vector<std::unique_ptr<Brush>>& Painterly::brushes() {
@@ -162,8 +58,16 @@ const cv::Mat& Painterly::source() const {
     return _source;
 }
 
-cv::Mat& Painterly::canvas() {
-    return _canvas;
+cv::Mat& Painterly::frame() {
+    return _frame;
+}
+
+cv::Mat& Painterly::prev_frame() {
+    return _prev_frame;
+}
+
+cv::Mat& Painterly::prev_source() {
+    return _prev_source;
 }
 
 cv::Rect& Painterly::bounds() {
@@ -187,27 +91,31 @@ void Painterly::clear_brushes() {
 
 
 void Painterly::save_canvas(const std::string& filename) const {
-    cv::imwrite(filename, _canvas);
+    cv::imwrite(filename, _frame);
 }
 
 void Painterly::set_image_file(const std::string& image_file) {
     _source = cv::imread(image_file, CV_LOAD_IMAGE_COLOR);
     _source.convertTo(_source, CV_8UC3);
-    _canvas = cv::Mat(source().rows, source().cols, CV_8UC3);
+}
+
+void Painterly::reset_brushes() {
+    std::for_each(brushes().begin(), brushes().end(), [](const std::unique_ptr<Brush>& brush){ brush->reset(); });
 }
 
 void Painterly::init_paint() {
-    _canvas = cv::Scalar(0, 0, 0);
-    _bounds = cv::Rect(0, 0, canvas().cols, canvas().rows);
+    _frame = cv::Mat(source().rows, source().cols, CV_8UC3, cv::Vec3b(0, 0, 0));
+    _prev_frame.release();
+    _prev_source.release();
+    _bounds = cv::Rect(0, 0, frame().cols, frame().rows);
     cv::namedWindow(SOURCE_NAME, cv::WINDOW_AUTOSIZE);
     cv::namedWindow(PAINTED_NAME, cv::WINDOW_AUTOSIZE);
-    cv::imshow(SOURCE_NAME, source());
-    std::for_each(brushes().begin(), brushes().end(), [](const std::unique_ptr<Brush>& brush){ brush->reset(); });
+    reset_brushes();
 }
 
 
 cv::Mat Painterly::difference(const cv::Mat& reference_image) {
-    cv::Mat diff(canvas().rows, canvas().cols, CV_32FC1);
+    cv::Mat diff(frame().rows, frame().cols, CV_32FC1);
 #ifdef USE_PPL
     concurrency::parallel_for(0, diff.rows, [&](int row){
         concurrency::parallel_for(0, diff.cols, [&,row](int col){
@@ -215,11 +123,11 @@ cv::Mat Painterly::difference(const cv::Mat& reference_image) {
     for (int row = 0; row < diff.rows; row++) {
         for (int col = 0; col < diff.cols; col++) {
 #endif
-            if (canvas().at<cv::Vec3b>(row, col) == cv::Vec3b(0, 0, 0)) {
+            if (frame().at<cv::Vec3b>(row, col) == cv::Vec3b(0, 0, 0)) {
                 diff.at<float>(row, col) = 1000000.0f;
             }
             else {
-                diff.at<float>(row, col) = cv::norm(canvas().at<cv::Vec3b>(row, col), reference_image.at<cv::Vec3b>(row, col));
+                diff.at<float>(row, col) = cv::norm(frame().at<cv::Vec3b>(row, col), reference_image.at<cv::Vec3b>(row, col));
             }
 #ifdef USE_PPL
         });
@@ -231,44 +139,78 @@ cv::Mat Painterly::difference(const cv::Mat& reference_image) {
     return diff;
 }
 
+double Painterly::frame_difference(const cv::Range& xrange, const cv::Range& yrange) {
+    if (prev_source().empty()) {
+        return -1.0;
+    }
+    double diff = 0.0;
+    cv::Mat frame_area = source()(xrange, yrange);
+    cv::Mat prev_area = prev_source()(xrange, yrange);
+    for (int row = 0; row < frame_area.rows; row++) {
+        for (int col = 0; col < frame_area.cols; col++) {
+            diff += cv::norm(frame_area.at<cv::Vec3b>(row, col), prev_area.at<cv::Vec3b>(row, col));
+        }
+    }
+    return diff / (xrange.size() * yrange.size());
+    //return cv::norm(frame()(xrange, yrange), prev_frame()(xrange, yrange)) / (xrange.size()*yrange.size());
+}
+
 
 double Painterly::paint(const std::string& image_file) {
     set_image_file(image_file);
-    return paint();
+    init_paint();
+    return paint(true);
 }
 
-double Painterly::paint() {
-    double start = static_cast<double>(cv::getTickCount());
+double Painterly::paint(cv::VideoCapture& video, const std::string& out_file) {
+    cv::VideoWriter out(out_file, CV_FOURCC('M','J','P','G'), (int)video.get(CV_CAP_PROP_FPS),
+        cv::Size(video.get(CV_CAP_PROP_FRAME_WIDTH), video.get(CV_CAP_PROP_FRAME_HEIGHT)));
+    video >> _source;
     init_paint();
-    std::for_each(brushes().rbegin(), brushes().rend(), [this](const std::unique_ptr<Brush>& brush){
+    double total_time = paint(true);
+    out << frame();
+    while (video.read(_source)/* && video.read(_source) && video.read(_source)*/) {
+        reset_brushes();
+        total_time += paint(false);
+        out << frame();
+        prev_frame() = frame().clone();
+        prev_source() = source().clone();
+        cv::waitKey(1);
+    }
+    return total_time;
+}
+
+double Painterly::paint(bool video) {
+    double start = static_cast<double>(cv::getTickCount());
+    std::for_each(brushes().rbegin(), brushes().rend(), [this,&video](const std::unique_ptr<Brush>& brush){
         cv::Mat reference_image;
-        int size = static_cast<int>(blur_factor() * brush->radius());
+        int size = static_cast<int>(style().blur_factor() * brush->radius());
         if (size % 2 == 0) {
             size++;
         }
         cv::GaussianBlur(source(), reference_image, cv::Size(size, size), size, size);
-        paint_layer(reference_image, brush);
+        paint_layer(reference_image, brush, video);
+        video = false;
         //cv::namedWindow(std::to_string(brush->radius()), cv::WINDOW_AUTOSIZE);
         //cv::imshow(std::to_string(brush->radius()), canvas());
     });
-    /*
     cv::Mat mask;
-    cv::inRange(canvas(), cv::Scalar(0,0,0), cv::Scalar(0,0,0), mask);
-    source().copyTo(canvas(), mask);
-    */
-    cv::imshow(PAINTED_NAME, canvas());
+    cv::inRange(frame(), cv::Scalar(0,0,0), cv::Scalar(0,0,0), mask);
+    source().copyTo(frame(), mask);
+    cv::imshow(SOURCE_NAME, source());
+    cv::imshow(PAINTED_NAME, frame());
     return (static_cast<double>(cv::getTickCount()) - start) / cv::getTickFrequency();
 }
 
-void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_ptr<Brush>& brush) {
+void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_ptr<Brush>& brush, bool refresh) {
     cv::redirectError(handle_error);
-    cv::Mat diff = difference(reference_image);
-    int grid = static_cast<int>(grid_size() * brush->radius());
+    cv::Mat diff = refresh ? cv::Mat::zeros(reference_image.rows, reference_image.cols, CV_32F) : difference(reference_image);
+    int grid = static_cast<int>(style().grid_size() * brush->radius());
 #ifdef USE_PPL
     concurrency::concurrent_vector<Stroke> strokes;
     strokes.reserve(2 * reference_image.rows/grid * reference_image.cols/grid);
-    concurrency::parallel_for(0, reference_image.rows, grid, [this,&reference_image,&diff,&strokes,&brush,grid](int row){
-        concurrency::parallel_for(0, reference_image.cols, grid, [this,&reference_image,&diff,&strokes,&brush,grid,row](int col){
+    concurrency::parallel_for(0, reference_image.rows, grid, [this,&reference_image,&diff,&strokes,&brush,grid,refresh](int row){
+        concurrency::parallel_for(0, reference_image.cols, grid, [this,&reference_image,&diff,&strokes,&brush,grid,refresh,row](int col){
 #else
     std::vector<Stroke> strokes;
     strokes.reserve(2 * reference_image.rows/grid * reference_image.cols/grid);
@@ -278,11 +220,10 @@ void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_pt
             cv::Range xrange = cv::Range(std::max(row-grid/2, 0), std::min(row+grid/2, reference_image.rows));
             cv::Range yrange = cv::Range(std::max(col-grid/2, 0), std::min(col+grid/2, reference_image.cols));
             cv::Mat area = diff(xrange, yrange);
-            //qDebug() << cv::sum(area)[0] / (grid * grid);
-            if (cv::sum(area)[0] / (grid * grid) > threshold()) {
+            if (refresh || frame_difference(xrange, yrange) > style().video_threshold() || cv::sum(area)[0] > style().threshold()) {
                 cv::Point max_loc;
                 cv::minMaxLoc(area, nullptr, nullptr, nullptr, &max_loc);
-                strokes.push_back(Stroke(brush.get(), cv::Point(std::min(reference_image.cols-1, max_loc.x+col), std::min(reference_image.rows-1, max_loc.y+row))));
+                strokes.push_back(Stroke(brush.get(), cv::Point(max_loc.x+col, max_loc.y+row)));
             }
 #ifdef USE_PPL
         });
@@ -292,10 +233,9 @@ void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_pt
     }
 #endif
     std::random_shuffle(strokes.begin(), strokes.end());
-    qDebug() << strokes.size();
     std::for_each(strokes.begin(), strokes.end(), [this,&reference_image](const Stroke& stroke) {
         if (stroke.point().inside(bounds())) {
-            stroke(canvas(), reference_image);
+            stroke(frame(), reference_image, style());
         }
     });
 }

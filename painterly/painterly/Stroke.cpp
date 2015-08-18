@@ -19,6 +19,6 @@ const cv::Point& Stroke::point() const {
 }
 
 
-void Stroke::operator()(cv::Mat& canvas, const cv::Mat& reference_image) const {
-    brush()->make_stroke(canvas, point(), reference_image);
+void Stroke::operator()(cv::Mat& canvas, const cv::Mat& reference_image, const Style& style) const {
+    brush()->make_stroke(canvas, point(), reference_image, style);
 }
