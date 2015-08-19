@@ -53,5 +53,6 @@ void GLWindow::open_video(cv::VideoCapture& video, const std::string& out_file) 
     painter()->add_brush(new SplineBrush(8));
     painter()->add_brush(new SplineBrush(4));
     painter()->add_brush(new SplineBrush(2));
-    painter()->paint(video, out_file);
+    double time = painter()->paint(video, out_file);
+    ui.lcdTime_Taken->display(time);
 }

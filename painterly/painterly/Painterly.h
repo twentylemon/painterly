@@ -2,6 +2,8 @@
 #ifndef PAINTERLY_H
 #define PAINTERLY_H
 
+#include <map>
+#include <tuple>
 #include <string>
 #include <vector>
 #include <memory>
@@ -47,19 +49,18 @@ private:
     void paint_layer(const cv::Mat& reference_image, const std::unique_ptr<Brush>& brush, bool refresh, bool random);
 
     cv::Mat difference(const cv::Mat& reference_image);
-    double frame_difference(const cv::Range& xrange, const cv::Range& yrange);
+    bool frame_difference(const cv::Range& xrange, const cv::Range& yrange, double threshold);
 
     cv::Mat& frame();
-    cv::Mat& prev_frame();
     cv::Mat& prev_source();
     cv::Rect& bounds();
 
     std::vector<std::unique_ptr<Brush>> _brushes;
     cv::Mat _frame;
-    cv::Mat _prev_frame;
     cv::Mat _source;
     cv::Mat _prev_source;
     cv::Rect _bounds;
+    std::map<std::tuple<int,int,int,int>, double> _video_error;
 
     Style _style;
 };

@@ -20,7 +20,6 @@
 #endif
 
 
-
 int handle_error(int status, const char* func_name, const char* err_msg, const char* file_name, int line, void* userdata) {
     qDebug() << err_msg;
     return 0;
@@ -62,11 +61,6 @@ const cv::Mat& Painterly::source() const {
 cv::Mat& Painterly::frame() {
     return _frame;
 }
-
-cv::Mat& Painterly::prev_frame() {
-    return _prev_frame;
-}
-
 cv::Mat& Painterly::prev_source() {
     return _prev_source;
 }
@@ -106,8 +100,8 @@ void Painterly::reset_brushes() {
 
 void Painterly::init_paint() {
     _frame = cv::Mat(source().rows, source().cols, CV_8UC3, cv::Vec3b(0, 0, 0));
-    _prev_frame.release();
     _prev_source.release();
+    _video_error.clear();
     _bounds = cv::Rect(0, 0, frame().cols, frame().rows);
     cv::namedWindow(SOURCE_NAME, cv::WINDOW_AUTOSIZE);
     cv::namedWindow(PAINTED_NAME, cv::WINDOW_AUTOSIZE);
@@ -140,21 +134,26 @@ cv::Mat Painterly::difference(const cv::Mat& reference_image) {
     return diff;
 }
 
-double Painterly::frame_difference(const cv::Range& xrange, const cv::Range& yrange) {
+bool Painterly::frame_difference(const cv::Range& xrange, const cv::Range& yrange, double threshold) {
     if (prev_source().empty()) {
-        return 1000000.0;
+        return true;
     }
-    double diff = 0.0;
-    cv::Mat frame_area = source()(xrange, yrange);
-    cv::Mat prev_area = prev_source()(xrange, yrange);
-    for (int row = 0; row < frame_area.rows; row++) {
-        for (int col = 0; col < frame_area.cols; col++) {
-            diff += cv::norm(frame_area.at<cv::Vec3b>(row, col), prev_area.at<cv::Vec3b>(row, col));
-        }
+    //return cv::norm(source()(xrange, yrange), prev_source()(xrange, yrange)) / (xrange.size()*yrange.size()) > threshold;
+    double diff = cv::norm(source()(xrange, yrange), prev_source()(xrange, yrange)) / (xrange.size()*yrange.size());
+    std::tuple<int,int,int,int> key = std::make_tuple(xrange.start, xrange.end, yrange.start, yrange.end);
+    auto it = _video_error.lower_bound(key);
+    if (it != _video_error.end() && !(_video_error.key_comp()(key, it->first))) {
+        //if (diff > threshold/4.0)
+            it->second += diff;
     }
-    //qDebug() << diff / (xrange.size() * yrange.size()) << "\t" << cv::norm(frame()(xrange, yrange), prev_frame()(xrange, yrange)) / (xrange.size()*yrange.size());
-    //return diff / (xrange.size() * yrange.size());
-    return cv::norm(source()(xrange, yrange), prev_source()(xrange, yrange)) / (xrange.size()*yrange.size());
+    else {
+        it = _video_error.emplace_hint(it, key, diff);
+    }
+    if (it->second > threshold) {
+        it->second = 0.0;
+        return true;
+    }
+    return false;
 }
 
 
@@ -165,7 +164,7 @@ double Painterly::paint(const std::string& image_file) {
 }
 
 double Painterly::paint(cv::VideoCapture& video, const std::string& out_file) {
-    cv::VideoWriter out(out_file, CV_FOURCC('M','J','P','G'), (int)std::ceil(video.get(CV_CAP_PROP_FPS)) / 3,
+    cv::VideoWriter out(out_file, CV_FOURCC('M','J','P','G'), static_cast<int>(std::ceil(video.get(CV_CAP_PROP_FPS))) / 3,
         cv::Size(video.get(CV_CAP_PROP_FRAME_WIDTH), video.get(CV_CAP_PROP_FRAME_HEIGHT)));
     //video.set(CV_CAP_PROP_POS_MSEC, 1000);
     video >> _source;
@@ -176,12 +175,8 @@ double Painterly::paint(cv::VideoCapture& video, const std::string& out_file) {
         reset_brushes();
         total_time += paint(true);
         out << frame();
-        
-        prev_frame() = frame().clone();
         prev_source() = source().clone();
-        
-        //frame() = cv::Vec3b(0, 0, 0);
-        cv::waitKey(1);
+        cv::waitKey(1); // wait for the paint event
     }
     return total_time;
 }
@@ -201,9 +196,11 @@ double Painterly::paint(bool video, bool first_frame) {
         //cv::namedWindow(std::to_string(brush->radius()), cv::WINDOW_AUTOSIZE);
         //cv::imshow(std::to_string(brush->radius()), canvas());
     });
-    cv::Mat mask;
-    cv::inRange(frame(), cv::Scalar(0,0,0), cv::Scalar(0,0,0), mask);
-    source().copyTo(frame(), mask);
+    if (video) { // actually if not a video
+        cv::Mat mask;
+        cv::inRange(frame(), cv::Scalar(0,0,0), cv::Scalar(0,0,0), mask);
+        source().copyTo(frame(), mask);
+    }
     time = (static_cast<double>(cv::getTickCount()) - time) / cv::getTickFrequency();
     cv::imshow(SOURCE_NAME, source());
     cv::imshow(PAINTED_NAME, frame());
@@ -228,10 +225,13 @@ void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_pt
             cv::Range xrange = cv::Range(std::max(row-grid/2, 0), std::min(row+grid/2, diff.rows));
             cv::Range yrange = cv::Range(std::max(col-grid/2, 0), std::min(col+grid/2, diff.cols));
             cv::Mat area = diff(xrange, yrange);
-            if (refresh || (frame_difference(xrange, yrange) > style().video_threshold() && cv::sum(area)[0] > style().threshold())) {
+            if (refresh || (frame_difference(xrange, yrange, style().video_threshold()) && cv::sum(area)[0] > style().threshold())) {
                 cv::Point max_loc;
                 cv::minMaxLoc(area, nullptr, nullptr, nullptr, &max_loc);
-                strokes.push_back(Stroke(brush.get(), cv::Point(max_loc.x+col, max_loc.y+row)));
+                max_loc += cv::Point(col, row);
+                if (max_loc.inside(bounds())) {
+                    strokes.push_back(Stroke(brush.get(), max_loc));
+                }
             }
 #ifdef USE_PPL
         });
@@ -245,8 +245,6 @@ void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_pt
     }
     //qDebug() << brush->radius() << "\t" << strokes.size();
     std::for_each(strokes.begin(), strokes.end(), [this,&reference_image](const Stroke& stroke) {
-        if (stroke.point().inside(bounds())) {
-            stroke(frame(), reference_image, style());
-        }
+        stroke(frame(), reference_image, style());
     });
 }
