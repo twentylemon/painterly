@@ -10,7 +10,7 @@ Style::Style()
 
 void Style::impressionist() {
     set_threshold(100.0);
-    set_video_threshold(100.0);
+    set_video_threshold(10.0);
     set_blur_factor(0.5);
     set_alpha(1.0);
     set_grid_size(1.0);

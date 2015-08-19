@@ -14,7 +14,7 @@
    <string>Painterly Rendering</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -188,6 +188,13 @@
       <widget class="QPushButton" name="buttonOpen_GoT">
        <property name="text">
         <string>Open GoT</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QPushButton" name="buttonOpen_Good_Eats">
+       <property name="text">
+        <string>Open Good Eats</string>
        </property>
       </widget>
      </item>
@@ -414,11 +421,27 @@
    <sender>buttonOpen_GoT</sender>
    <signal>clicked()</signal>
    <receiver>GLWindowClass</receiver>
-   <slot>openDefaultVideo()</slot>
+   <slot>openGoT()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>245</x>
      <y>142</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonOpen_Good_Eats</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>openGoodEats()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>245</x>
+     <y>171</y>
     </hint>
     <hint type="destinationlabel">
      <x>150</x>
@@ -434,6 +457,7 @@
   <slot>saveDefault()</slot>
   <slot>repaintCurrent()</slot>
   <slot>openVideo()</slot>
-  <slot>openDefaultVideo()</slot>
+  <slot>openGoodEats()</slot>
+  <slot>openGoT()</slot>
  </slots>
 </ui>

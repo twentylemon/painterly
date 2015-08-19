@@ -35,7 +35,12 @@ void GLWindow::openVideo() {
     open_video(video, "D:/vids/out.avi");
 }
 
-void GLWindow::openDefaultVideo() {
+void GLWindow::openGoT() {
     cv::VideoCapture video("D:/vids/got_short.mp4");
-    open_video(video, "D:/vids/out.avi");
+    open_video(video, "D:/vids/got.avi");
+}
+
+void GLWindow::openGoodEats() {
+    cv::VideoCapture video("D:/vids/Good Eats/Couch Potato Weekend (Potato Interstitials)/Couch Potato Weekend - A Spud In Every Tank.mp4");
+    open_video(video, "D:/vids/good_eats.avi");
 }

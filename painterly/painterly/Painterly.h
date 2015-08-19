@@ -43,8 +43,8 @@ private:
     void init_paint();
     bool read_frame(cv::VideoCapture& video);
 
-    double paint(bool video);
-    void paint_layer(const cv::Mat& reference_image, const std::unique_ptr<Brush>& brush, bool refresh);
+    double paint(bool video, bool first_frame = false);
+    void paint_layer(const cv::Mat& reference_image, const std::unique_ptr<Brush>& brush, bool refresh, bool random);
 
     cv::Mat difference(const cv::Mat& reference_image);
     double frame_difference(const cv::Range& xrange, const cv::Range& yrange);

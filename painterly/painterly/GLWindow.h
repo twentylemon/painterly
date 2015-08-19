@@ -25,7 +25,8 @@ private slots:
     void repaintCurrent();
 
     void openVideo();
-    void openDefaultVideo();
+    void openGoT();
+    void openGoodEats();
 
 private:
     void open_image(const std::string& file);
