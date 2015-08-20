@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include <numeric>
+#include <ppl.h>
 
 #include <qdebug.h>
 
@@ -15,7 +16,6 @@
 #endif
 
 #ifdef USE_PPL
-#include <ppl.h>
 #include <concurrent_vector.h>
 #endif
 
@@ -138,8 +138,8 @@ bool Painterly::frame_difference(const cv::Range& xrange, const cv::Range& yrang
     if (prev_source().empty()) {
         return true;
     }
-    //return cv::norm(source()(xrange, yrange), prev_source()(xrange, yrange)) / (xrange.size()*yrange.size()) > threshold;
-    double diff = cv::norm(source()(xrange, yrange), prev_source()(xrange, yrange)) / (xrange.size()*yrange.size());
+    //return cv::norm(source()(xrange, yrange), frame()(xrange, yrange)) / (xrange.size()*yrange.size()) > threshold;
+    double diff = cv::norm(source()(xrange, yrange), frame()(xrange, yrange)) / (xrange.size()*yrange.size());
     std::tuple<int,int,int,int> key = std::make_tuple(xrange.start, xrange.end, yrange.start, yrange.end);
     auto it = _video_error.lower_bound(key);
     if (it != _video_error.end() && !(_video_error.key_comp()(key, it->first))) {
@@ -156,6 +156,28 @@ bool Painterly::frame_difference(const cv::Range& xrange, const cv::Range& yrang
     return false;
 }
 
+void Painterly::video_off_frame() {
+    reset_brushes();
+    std::for_each(brushes().rbegin(), brushes().rend(), [this](const std::unique_ptr<Brush>& brush){
+        cv::Mat reference_image;
+        int size = static_cast<int>(style().blur_factor() * brush->radius());
+        if (size % 2 == 0) {
+            size++;
+        }
+        cv::GaussianBlur(source(), reference_image, cv::Size(size, size), size, size);
+        cv::Mat diff = difference(reference_image);
+        int grid = static_cast<int>(style().grid_size() * brush->radius());
+        concurrency::parallel_for(0, diff.rows, grid, [this,&diff,&brush,grid](int row){
+            concurrency::parallel_for(0, diff.cols, grid, [this,&diff,&brush,grid,row](int col){
+                cv::Range xrange = cv::Range(std::max(row-grid/2, 0), std::min(row+grid/2, diff.rows));
+                cv::Range yrange = cv::Range(std::max(col-grid/2, 0), std::min(col+grid/2, diff.cols));
+                frame_difference(xrange, yrange, 1000000.0);
+            });
+        });
+    });
+    prev_source() = source().clone();
+}
+
 
 double Painterly::paint(const std::string& image_file) {
     set_image_file(image_file);
@@ -166,11 +188,11 @@ double Painterly::paint(const std::string& image_file) {
 double Painterly::paint(cv::VideoCapture& video, const std::string& out_file) {
     cv::VideoWriter out(out_file, CV_FOURCC('M','J','P','G'), static_cast<int>(std::ceil(video.get(CV_CAP_PROP_FPS))) / 3,
         cv::Size(video.get(CV_CAP_PROP_FRAME_WIDTH), video.get(CV_CAP_PROP_FRAME_HEIGHT)));
-    //video.set(CV_CAP_PROP_POS_MSEC, 1000);
     video >> _source;
     init_paint();
     double total_time = paint(true, true);
     out << frame();
+    
     while (video.read(_source) && video.read(_source) && video.read(_source)) {
         reset_brushes();
         total_time += paint(true);
@@ -178,6 +200,23 @@ double Painterly::paint(cv::VideoCapture& video, const std::string& out_file) {
         prev_source() = source().clone();
         cv::waitKey(1); // wait for the paint event
     }
+    
+    /*
+    int frame_num = 0;
+    while (video.read(_source) && video.read(_source) && video.read(_source)) {
+        frame_num++;
+        if (frame_num % 3 == 0) {
+            reset_brushes();
+            total_time += paint(true);
+            out << frame();
+            prev_source() = source().clone();
+            cv::waitKey(1); // wait for the paint event
+        }
+        else {
+            video_off_frame();
+        }
+    }
+    */
     return total_time;
 }
 
@@ -193,6 +232,9 @@ double Painterly::paint(bool video, bool first_frame) {
         cv::GaussianBlur(source(), reference_image, cv::Size(size, size), size, size);
         paint_layer(reference_image, brush, first_frame, video);
         first_frame = false;
+        if (video) {
+            cv::imwrite("D:/pics/results/" + std::to_string(brush->radius()) + ".jpg", frame());
+        }
         //cv::namedWindow(std::to_string(brush->radius()), cv::WINDOW_AUTOSIZE);
         //cv::imshow(std::to_string(brush->radius()), canvas());
     });
@@ -208,7 +250,7 @@ double Painterly::paint(bool video, bool first_frame) {
 }
 
 void Painterly::paint_layer(const cv::Mat& reference_image, const std::unique_ptr<Brush>& brush, bool refresh, bool random) {
-    cv::redirectError(handle_error);
+    //cv::redirectError(handle_error);
     cv::Mat diff = refresh ? cv::Mat::zeros(reference_image.rows, reference_image.cols, CV_32F) : difference(reference_image);
     int grid = static_cast<int>(style().grid_size() * brush->radius());
 #ifdef USE_PPL

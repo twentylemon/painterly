@@ -23,6 +23,7 @@ private slots:
     void saveDefault();
     void openChaika();
     void repaintCurrent();
+    void openWebcam();
 
     void openVideo();
     void openGoT();

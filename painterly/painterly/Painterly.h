@@ -50,6 +50,7 @@ private:
 
     cv::Mat difference(const cv::Mat& reference_image);
     bool frame_difference(const cv::Range& xrange, const cv::Range& yrange, double threshold);
+    void video_off_frame();
 
     cv::Mat& frame();
     cv::Mat& prev_source();

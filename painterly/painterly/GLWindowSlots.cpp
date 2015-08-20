@@ -44,3 +44,8 @@ void GLWindow::openGoodEats() {
     cv::VideoCapture video("D:/vids/Good Eats/Couch Potato Weekend (Potato Interstitials)/Couch Potato Weekend - A Spud In Every Tank.mp4");
     open_video(video, "D:/vids/good_eats.avi");
 }
+
+void GLWindow::openWebcam() {
+    cv::VideoCapture cam(0);
+    open_video(cam, "D:/vids/cam.avi");
+}

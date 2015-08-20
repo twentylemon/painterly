@@ -47,6 +47,7 @@ public:
     QPushButton *buttonRepaint;
     QPushButton *buttonOpen_GoT;
     QPushButton *buttonOpen_Good_Eats;
+    QPushButton *buttonWebcam;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QToolBar *mainToolBar;
@@ -146,6 +147,11 @@ public:
 
         gridLayout->addWidget(buttonOpen_Good_Eats, 4, 2, 1, 1);
 
+        buttonWebcam = new QPushButton(layoutWidget);
+        buttonWebcam->setObjectName(QStringLiteral("buttonWebcam"));
+
+        gridLayout->addWidget(buttonWebcam, 2, 2, 1, 1);
+
         GLWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(GLWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -179,6 +185,7 @@ public:
         QObject::connect(buttonOpen_Video, SIGNAL(clicked()), GLWindowClass, SLOT(openVideo()));
         QObject::connect(buttonOpen_GoT, SIGNAL(clicked()), GLWindowClass, SLOT(openGoT()));
         QObject::connect(buttonOpen_Good_Eats, SIGNAL(clicked()), GLWindowClass, SLOT(openGoodEats()));
+        QObject::connect(buttonWebcam, SIGNAL(clicked()), GLWindowClass, SLOT(openWebcam()));
 
         QMetaObject::connectSlotsByName(GLWindowClass);
     } // setupUi
@@ -201,6 +208,7 @@ public:
         buttonRepaint->setText(QApplication::translate("GLWindowClass", "Repaint", 0));
         buttonOpen_GoT->setText(QApplication::translate("GLWindowClass", "Open GoT", 0));
         buttonOpen_Good_Eats->setText(QApplication::translate("GLWindowClass", "Open Good Eats", 0));
+        buttonWebcam->setText(QApplication::translate("GLWindowClass", "Webcam", 0));
         menuFile->setTitle(QApplication::translate("GLWindowClass", "File", 0));
     } // retranslateUi
 

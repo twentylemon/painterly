@@ -198,6 +198,13 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="2">
+      <widget class="QPushButton" name="buttonWebcam">
+       <property name="text">
+        <string>Webcam</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -449,6 +456,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>buttonWebcam</sender>
+   <signal>clicked()</signal>
+   <receiver>GLWindowClass</receiver>
+   <slot>openWebcam()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>245</x>
+     <y>113</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>saveImage()</slot>
@@ -459,5 +482,6 @@
   <slot>openVideo()</slot>
   <slot>openGoodEats()</slot>
   <slot>openGoT()</slot>
+  <slot>openWebcam()</slot>
  </slots>
 </ui>
