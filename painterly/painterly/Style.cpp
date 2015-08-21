@@ -21,7 +21,7 @@ void Style::impressionist() {
 
 void Style::expressionist() {
     set_threshold(50.0);
-    set_video_threshold(100.0);
+    set_video_threshold(15.0);
     set_blur_factor(0.5);
     set_alpha(0.7);
     set_grid_size(1.0);
